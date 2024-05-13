@@ -16,11 +16,11 @@ This project was created using `bun init` in bun v1.1.6. [Bun](https://bun.sh) i
 
 ## Commands
 
-- `@StatusBot help` - Shows a list of commands
-- `@StatusBot ping` - Replies with pong
-- `@StatusBot register <server>` - Registers a server by the ip address or hostname
-- `@StatusBot unregister <server>` - Unregisters a server by the ip address or hostname
-- `@StatusBot list` - Replies with a list of all registered servers
-- `@StatusBot status` - Replies with the current status of all registered servers
-- `@StatusBot subscribe <channel>` - Sets a channel to receive status updates
-- `@StatusBot unsubscribe <channel>` - Unsets a channel to receive status updates
+- `/help` - Shows a list of commands
+- `/ping` - Replies with pong
+- `/register <server>` - Registers a server by the ip address or hostname
+- `/unregister <server>` - Unregisters a server by the ip address or hostname
+- `/list` - Replies with a list of all registered servers
+- `/status` - Replies with the current status of all registered servers
+- `/subscribe <channel>` - Sets a channel to receive status updates
+- `/unsubscribe <channel>` - Unsets a channel to receive status updates
