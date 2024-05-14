@@ -28,8 +28,8 @@ interface StatusResponse {
 export async function getServerStatus(
   host: string,
 ): Promise<"online" | "offline"> {
-  const status = await mcApi
-    .get(`status/java/${host}?query=false`)
-    .json<StatusResponse>();
+  const response = await mcApi.get(`status/java/${host}?query=false`);
+  const status = await response.json<StatusResponse>();
+  console.log("Status:", status.online);
   return status.online ? "online" : "offline";
 }
