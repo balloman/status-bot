@@ -6,9 +6,10 @@ import {
   type SharedSlashCommand,
 } from "discord.js";
 import { eq } from "drizzle-orm";
+import { getServerStatus } from "./api";
 import { db } from "./db";
 import { channels, servers } from "./schema";
-import { colorBlue, colorRed, getServerStatus } from "./utils";
+import { colorBlue, colorRed } from "./utils";
 
 type CommandComponents = {
   command: SharedSlashCommand;

@@ -18,7 +18,7 @@
   "dependencies": {
     "discord.js": "^14.15.2",
     "drizzle-orm": "^0.30.10",
-    "node-mcstatus": "^1.2.0",
+    "ky": "^1.2.4",
     "pg": "^8.11.5"
   },
   "trustedDependencies": [

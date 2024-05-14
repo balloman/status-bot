@@ -1,14 +1,14 @@
 import { ChannelType, type Channel, type Client } from "discord.js";
 import { eq } from "drizzle-orm";
+import { getServerStatus } from "./api";
 import { db } from "./db";
 import { servers } from "./schema";
-import { getServerStatus } from "./utils";
 
 export function startStatusUpdateJob(client: Client) {
   console.log("Starting status update job...");
   setInterval(async () => {
     await updateStatuses(client).catch(console.error);
-  }, 30000);
+  }, 10000);
 }
 
 async function updateStatuses(client: Client) {
@@ -27,6 +27,10 @@ async function updateStatuses(client: Client) {
       };
     }),
   );
+  if (!statuses.some((status) => status.hasNewStatus)) {
+    console.log("No new statuses found");
+    return;
+  }
   console.log("Statuses:", statuses);
   await db.transaction(async (tx) => {
     for (const status of statuses) {
