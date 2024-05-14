@@ -2,13 +2,27 @@
   "name": "status-bot",
   "module": "src/index.ts",
   "type": "module",
+  "scripts": {
+    "start": "bun src/index.ts"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@biomejs/biome": "^1.7.3",
+    "@types/bun": "latest",
+    "@types/pg": "^8.11.6",
+    "dotenv": "^16.4.5",
+    "drizzle-kit": "^0.21.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "discord.js": "^14.15.2"
-  }
+    "discord.js": "^14.15.2",
+    "drizzle-orm": "^0.30.10",
+    "pg": "^8.11.5"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "es5-ext",
+    "esbuild"
+  ]
 }

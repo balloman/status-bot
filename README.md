@@ -16,7 +16,6 @@ This project was created using `bun init` in bun v1.1.6. [Bun](https://bun.sh) i
 
 ## Commands
 
-- `/help` - Shows a list of commands
 - `/ping` - Replies with pong
 - `/register <server>` - Registers a server by the ip address or hostname
 - `/unregister <server>` - Unregisters a server by the ip address or hostname
