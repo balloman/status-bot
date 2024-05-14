@@ -10,6 +10,7 @@ if (!DISCORD_TOKEN) {
 if (!DISCORD_CLIENT_ID) {
   throw new Error("CLIENT_ID is not set");
 }
+const cooldownMap = new Map<string, number>();
 
 // Register commands
 console.log("Registering commands...");
@@ -25,6 +26,14 @@ const client = new Client({ intents: ["Guilds"] });
 client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
   const startTime = Date.now();
+  const lastCast = cooldownMap.get(interaction.commandName);
+  if (lastCast && startTime - lastCast < 10000) {
+    await interaction.reply(
+      "Please wait 10s before casting this command again",
+    );
+    return;
+  }
+  cooldownMap.set(interaction.commandName, startTime);
   console.log("Received command:", interaction.commandName);
   const command = COMMANDS.find(
     (command) => command.command.name === interaction.commandName,
