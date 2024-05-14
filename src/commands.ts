@@ -45,4 +45,17 @@ export const COMMANDS: CommandComponents[] = [
       await interaction.reply("Registered server!");
     },
   },
+  {
+    command: new SlashCommandBuilder()
+      .setName("list")
+      .setDescription("Replies with a list of all registered servers"),
+    onExecute: async (interaction) => {
+      const servers = await db.query.servers.findMany();
+      await interaction.reply(
+        `Registered servers:\n${servers
+          .map((server) => server.host)
+          .join("\n")}`,
+      );
+    },
+  },
 ];
