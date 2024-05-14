@@ -1,14 +1,14 @@
 import {
+  ChannelType,
   SlashCommandBuilder,
   type CacheType,
   type ChatInputCommandInteraction,
   type SharedSlashCommand,
 } from "discord.js";
 import { eq } from "drizzle-orm";
-import * as mcStatus from "node-mcstatus";
 import { db } from "./db";
-import { servers } from "./schema";
-import { colorBlue, colorRed } from "./utils";
+import { channels, servers } from "./schema";
+import { colorBlue, colorRed, getServerStatus } from "./utils";
 
 type CommandComponents = {
   command: SharedSlashCommand;
@@ -45,7 +45,7 @@ export const COMMANDS: CommandComponents[] = [
       await db.insert(servers).values({
         host,
       });
-      await interaction.reply("Registered server!");
+      await interaction.reply(`Registered server ${host}!`);
     },
   },
   {
@@ -80,7 +80,7 @@ export const COMMANDS: CommandComponents[] = [
         return;
       }
       await db.delete(servers).where(eq(servers.host, host));
-      await interaction.reply("Unregistered server!");
+      await interaction.reply(`Unregistered server ${host}!`);
     },
   },
   {
@@ -92,11 +92,10 @@ export const COMMANDS: CommandComponents[] = [
     onExecute: async (interaction) => {
       await interaction.deferReply();
       const servers = await db.query.servers.findMany();
+      console.log("Servers:", servers);
       const statuses = await Promise.all(
         servers.map(async (server) => {
-          const status = await mcStatus.statusJava(server.host, undefined, {
-            query: false,
-          });
+          const status = await getServerStatus(server.host);
           return {
             host: server.host,
             status,
@@ -107,11 +106,60 @@ export const COMMANDS: CommandComponents[] = [
         .map(
           (status) =>
             `${status.host}: ${
-              status.status.online ? colorBlue("online") : colorRed("offline")
+              status.status === "online"
+                ? colorBlue("online")
+                : colorRed("offline")
             }`,
         )
         .join("\n")}\n\`\`\``;
       await interaction.editReply(statusesString);
+    },
+  },
+  {
+    command: new SlashCommandBuilder()
+      .setName("subscribe")
+      .setDescription("Sets a channel to receive status updates")
+      .addChannelOption((option) =>
+        option
+          .setName("channel")
+          .setDescription("Channel to subscribe to")
+          .setRequired(true)
+          .addChannelTypes(ChannelType.GuildText),
+      ),
+    onExecute: async (interaction) => {
+      const channel = interaction.options.getChannel("channel");
+      if (!channel) {
+        await interaction.reply("Please provide a channel");
+        return;
+      }
+      await db
+        .insert(channels)
+        .values({
+          id: channel.id,
+        })
+        .onConflictDoNothing();
+      await interaction.reply(`Subscribed to channel ${channel.name}!`);
+    },
+  },
+  {
+    command: new SlashCommandBuilder()
+      .setName("unsubscribe")
+      .setDescription("Unsets a channel to receive status updates")
+      .addChannelOption((option) =>
+        option
+          .setName("channel")
+          .setDescription("Channel to unsubscribe from")
+          .setRequired(true)
+          .addChannelTypes(ChannelType.GuildText),
+      ),
+    onExecute: async (interaction) => {
+      const channel = interaction.options.getChannel("channel");
+      if (!channel) {
+        await interaction.reply("Please provide a channel");
+        return;
+      }
+      await db.delete(channels).where(eq(channels.id, channel.id));
+      await interaction.reply(`Unsubscribed from channel ${channel.name}!`);
     },
   },
 ];

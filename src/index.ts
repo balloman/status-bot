@@ -1,5 +1,6 @@
 import { Client, Events, REST, Routes } from "discord.js";
 import { COMMANDS } from "./commands";
+import { startStatusUpdateJob } from "./jobs";
 
 console.log("Hello via Bun!");
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
@@ -46,5 +47,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
   const endTime = Date.now();
   console.log("Command executed in", endTime - startTime, "ms");
 });
+startStatusUpdateJob(client);
 
 client.login(DISCORD_TOKEN);
